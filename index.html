@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Курс: Стандарты сборки заказов</title>
+    <style>
+        /* --- БАЗОВЫЕ СТИЛИ --- */
+        :root {
+            --brand-red: #8B1C24;
+            --bg-color: #F7F4F2;
+            --card-bg: #FFFFFF;
+            --text-main: #333333;
+            --success: #2E7D32;
+            --error: #C62828;
+            --gold: #FFC107;
+            --border-radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 600px;
+            background-color: var(--card-bg);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+            min-height: 100vh;
+        }
+
+        /* --- ШАПКА И ПРОГРЕСС --- */
+        header {
+            background-color: var(--brand-red);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .header-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            padding-right: 60px;
+            padding-left: 60px;
+        }
+        
+        .header-subtitle {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .xp-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: rgba(255,255,255,0.2);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;
+        }
+
+        .xp-badge.bump {
+            transform: scale(1.2);
+            background-color: var(--gold);
+            color: var(--brand-red);
+        }
+
+        .progress-wrapper {
+            padding: 15px 20px 0;
+            flex-shrink: 0;
+        }
+
+        .progress-track {
+            height: 8px;
+            background-color: #E0E0E0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--brand-red);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+
+        /* --- КОНТЕНТ --- */
+        main {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            display: none;
+            animation: slideUp 0.3s ease forwards;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 1.3rem;
+            color: var(--brand-red);
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        /* --- ЭКРАН ВЫБОРА ЯЗЫКА --- */
+        .lang-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .lang-btn {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #FAFAFA;
+            border: 2px solid #E0E0E0;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .lang-btn:hover, .lang-btn:active {
+            background-color: #FFF3F3;
+            border-color: var(--brand-red);
+            color: var(--brand-red);
+        }
+
+        .lang-flag {
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+
+        /* --- БЛОКИ СОВЕТОВ --- */
+        .mentor-box {
+            background-color: #F0F7FF;
+            border-left: 4px solid #1976D2;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            font-size: 0.95rem;
+        }
+        
+        .mentor-box::before {
+            content: "💡 ";
+            font-weight: bold;
+            color: #1976D2;
+        }
+
+        .warning-box {
+            background-color: #FFF3F3;
+            border-left: 4px solid var(--error);
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            font-weight: 500;
+        }
+
+        .warning-box::before {
+            content: "🚨 ";
+            font-weight: bold;
+            color: var(--error);
+        }
+
+        /* --- КНОПКИ ВЫБОРА --- */
+        .option-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #FAFAFA;
+            border: 2px solid #E0E0E0;
+            border-radius: var(--border-radius);
+            margin-bottom: 10px;
+            text-align: left;
+            font-size: 1rem;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .option-btn:active { transform: scale(0.99); }
+
+        .option-btn.correct {
+            background-color: #E8F5E9;
+            border-color: var(--success);
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .option-btn.incorrect {
+            background-color: #FFEBEE;
+            border-color: var(--error);
+            color: var(--error);
+        }
+
+        .option-btn:disabled {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        /* --- ИГРОВАЯ ЗОНА (Клик по стакану) --- */
+        .game-zone {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            gap: 15px;
+        }
+
+        .cup-wrapper {
+            position: relative;
+            width: 100px;
+            height: 140px;
+            background-color: #F5F5F5;
+            border: 2px solid #CCC;
+            border-radius: 10px 10px 20px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding-bottom: 15px;
+        }
+
+        .cup-wrapper.tea { background-color: var(--brand-red); border-color: #5a1015; }
+        .cup-wrapper.bubble { background-color: rgba(255,255,255,0.9); border: 2px dashed #888; }
+        
+        .label-zone {
+            position: absolute;
+            bottom: 20px;
+            left: 10px;
+            right: 10px;
+            height: 35px;
+            background-color: rgba(255,255,255,0.7);
+            border: 2px dashed #999;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: #333;
+            text-align: center;
+            transition: all 0.3s;
+            padding: 0 5px;
+            line-height: 1.1;
+        }
+
+        .cup-wrapper.tea .label-zone { background-color: white; }
+        
+        .label-zone.correct-zone {
+            background-color: var(--success) !important;
+            border-color: var(--success);
+            color: white;
+            font-weight: bold;
+        }
+
+        .cup-name { font-size: 0.8rem; font-weight: bold; margin-top: 10px; text-align: center;}
+        .tea .cup-name { color: white; }
+
+        /* --- НАВИГАЦИЯ --- */
+        .nav-footer {
+            padding: 15px 20px;
+            background-color: var(--card-bg);
+            border-top: 1px solid #EEE;
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            flex-shrink: 0;
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-family: inherit;
+        }
+
+        .nav-btn.primary {
+            background-color: var(--brand-red);
+            color: white;
+        }
+
+        .nav-btn.secondary {
+            background-color: #F0F0F0;
+            color: var(--text-main);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* --- ВСПЛЫВАЮЩИЕ УВЕДОМЛЕНИЯ (XP) --- */
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .toast {
+            background-color: var(--gold);
+            color: var(--brand-red);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            animation: popFade 2s ease forwards;
+        }
+
+        @keyframes popFade {
+            0% { opacity: 0; transform: translateY(-20px) scale(0.8); }
+            15% { opacity: 1; transform: translateY(0) scale(1.1); }
+            30% { transform: translateY(0) scale(1); }
+            80% { opacity: 1; }
+            100% { opacity: 0; transform: translateY(-20px); }
+        }
+
+        /* --- СЕРТИФИКАТ --- */
+        .certificate {
+            display: none;
+            text-align: center;
+            padding: 30px 20px;
+            background: #FFF8E1;
+            border: 2px dashed var(--gold);
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 10px 20px rgba(255, 193, 7, 0.1);
+        }
+
+        .certificate h2 { color: #F57F17; margin-bottom: 15px; font-size: 1.5rem;}
+        .certificate .icon { font-size: 4rem; margin-bottom: 15px; }
+        .certificate .rank { font-size: 1.2rem; font-weight: bold; color: var(--brand-red); margin-top: 10px;}
+
+    </style>
+</head>
+<body>
+
+<div id="toast-container"></div>
+
+<div class="app-container">
+    <header>
+        <div class="header-title" id="headerTitle" data-i18n="header_title">Стандарты сборки</div>
+        <div class="header-subtitle" id="headerSubtitle" data-i18n="header_subtitle">Интерактивный курс</div>
+        <div class="xp-badge" id="xpBadge">⭐ <span id="xpValue">0</span> XP</div>
+    </header>
+
+    <div class="progress-wrapper">
+        <div class="progress-track">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+    </div>
+
+    <main>
+        <!-- Слайд 0: Выбор языка -->
+        <section class="slide active" id="slide-lang">
+            <h1 data-i18n="lang_title">Добро пожаловать!</h1>
+            <p data-i18n="lang_subtitle">Пожалуйста, выберите язык обучения:</p>
+            <div class="lang-grid">
+                <button class="lang-btn" onclick="selectLanguage('ru')"><span class="lang-flag">🇷🇺</span> Русский</button>
+                <button class="lang-btn" onclick="selectLanguage('kk')"><span class="lang-flag">🇰🇿</span> Қазақша</button>
+                <button class="lang-btn" onclick="selectLanguage('uz')"><span class="lang-flag">🇺🇿</span> O'zbekcha</button>
+                <button class="lang-btn" onclick="selectLanguage('ky')"><span class="lang-flag">🇰🇬</span> Кыргызча</button>
+                <button class="lang-btn" onclick="selectLanguage('tg')"><span class="lang-flag">🇹🇯</span> Тоҷикӣ</button>
+            </div>
+        </section>
+
+        <!-- Слайд 1: Введение -->
+        <section class="slide" id="slide-0">
+            <h1 data-i18n="s1_title">Твоя роль в доставке</h1>
+            <p data-i18n="s1_p1">Привет! Твоя задача — собрать заказ так, чтобы Гость получил его идеальным.</p>
+            <p data-i18n="s1_p2">Ошибки на этапе сборки (помятый стакан, неправильная наклейка, незапаянный соусник) приводят к порче продукта и возвратам.</p>
+            <div class="warning-box" data-i18n="s1_warn">Используй только ту упаковку, которая утверждена в действующей спецификации. Брать что-то другое запрещено.</div>
+            <p data-i18n="s1_p3">Этот курс научит тебя собирать напитки идеально. За правильные ответы ты будешь получать очки опыта (XP).</p>
+        </section>
+
+        <!-- Слайд 2: Авторский чай -->
+        <section class="slide" id="slide-1">
+            <h1 data-i18n="s2_title">Авторский чай / Глинтвейн</h1>
+            <p data-i18n="s2_p1">Помни главное правило: мы доставляем только концентрат. Гость сам добавит горячую воду.</p>
+            <p data-i18n="s2_p2">Выполни следующие действия:</p>
+            <ol>
+                <li data-i18n="s2_li1"><b>Получи:</b> Бармен отдает стакан (300 мл), закрытый КРАСНОЙ крышкой 90 мм.</li>
+                <li data-i18n="s2_li2"><b>Наклей:</b> Термоэтикетку ровно на нижнюю часть сзади стакана.</li>
+                <li data-i18n="s2_li3"><b>Поставь:</b> Стакан в подставку. Вставь мешалку в переднее отверстие.</li>
+            </ol>
+            <div class="mentor-box" data-i18n="s2_mentor">Если крышка не подходит или повреждена — не пытайся ее закрыть силой. Замени на новую из спецификации.</div>
+        </section>
+
+        <!-- Слайд 3: Бабл-ти -->
+        <section class="slide" id="slide-2">
+            <h1 data-i18n="s3_title">Бабл-ти (Bubble Cup)</h1>
+            <p data-i18n="s3_p1">Здесь есть важный нюанс с топпингом. Твой алгоритм:</p>
+            <ol>
+                <li data-i18n="s3_li1"><b>Получи:</b> Напиток в стакане 500 мл и НЕЗАПАЯННЫЙ соусник с тапиокой.</li>
+                <li data-i18n="s3_li2"><b>Запаяй:</b> Соусник с тапиокой в зоне сборки.</li>
+                <li data-i18n="s3_li3"><b>Наклей:</b> Термоэтикетку на нижнюю часть стакана И на запаянный соусник.</li>
+                <li data-i18n="s3_li4"><b>Поставь:</b> Стакан и соусник в переноску, добавь трубочку.</li>
+            </ol>
+            <div class="warning-box" data-i18n="s3_warn">Никогда не отдавай курьеру незапаянный соусник. Он протечет по дороге.</div>
+        </section>
+
+        <!-- Слайд 4: Тренажер -->
+        <section class="slide" id="slide-3">
+            <h1 data-i18n="s4_title">Практика: Куда клеить этикетку?</h1>
+            <p data-i18n="s4_p1">Нажми на правильную зону на каждом стакане, чтобы получить XP и открыть следующий шаг.</p>
+            
+            <div class="game-zone">
+                <div>
+                    <div class="cup-wrapper tea" id="cup1">
+                        <div class="label-zone" onclick="checkGame(this, true, 'cup1')" data-i18n="s4_zone_bottom">Нижняя часть</div>
+                        <div class="label-zone" style="top: 10px; bottom: auto;" onclick="checkGame(this, false, 'cup1')" data-i18n="s4_zone_top">Крышка</div>
+                    </div>
+                    <div class="cup-name" data-i18n="s4_cup_tea">Чай (300мл)</div>
+                </div>
+
+                <div>
+                    <div class="cup-wrapper bubble" id="cup2">
+                        <div class="label-zone" onclick="checkGame(this, true, 'cup2')" data-i18n="s4_zone_bottom">Нижняя часть</div>
+                        <div class="label-zone" style="top: 10px; bottom: auto;" onclick="checkGame(this, false, 'cup2')" data-i18n="s4_zone_top">Крышка</div>
+                    </div>
+                    <div class="cup-name" data-i18n="s4_cup_bubble">Бабл-ти (500мл)</div>
+                </div>
+            </div>
+            <div id="gameFeedback" style="text-align: center; font-weight: bold; margin-top: 10px; min-height: 24px;"></div>
+        </section>
+
+        <!-- Слайд 5: Кейс -->
+        <section class="slide" id="slide-4">
+            <h1 data-i18n="s5_title">Практика: Большой заказ</h1>
+            <p data-i18n="s5_p1">У Гостя заказ: роллы 10 шт, салаты 10 шт и 2 Бабл-ти. Как безопасно всё упаковать?</p>
+            
+            <button class="option-btn" onclick="handleQuizCase(this, false)" data-i18n="s5_opt1">Упакуй всё в один пакет, чтобы курьеру было удобнее нести.</button>
+            <button class="option-btn" onclick="handleQuizCase(this, true)" data-i18n="s5_opt2">Поставь напитки в угол пакета. Если тяжелые блюда могут их раздавить или залить — упакуй напитки в отдельный пакет.</button>
+            <button class="option-btn" onclick="handleQuizCase(this, false)" data-i18n="s5_opt3">Поставь напитки сверху на контейнеры, чтобы они не пролились.</button>
+            
+            <div id="quizCaseFeedback" style="text-align: center; font-weight: bold; margin-top: 10px; min-height: 24px;"></div>
+        </section>
+
+        <!-- Слайд 6: Аттестация -->
+        <section class="slide" id="slide-5">
+            <h1 data-i18n="s6_title">Аттестация</h1>
+            <p data-i18n="s6_p1">Ответь на 5 вопросов, чтобы завершить обучение. За каждый правильный ответ +10 XP.</p>
+            
+            <div id="test-container"></div>
+            
+            <button class="nav-btn primary" id="btnSubmitTest" style="width: 100%; margin-top: 20px;" onclick="submitTest()" data-i18n="s6_btn">Завершить тест</button>
+            <div id="testFeedback" style="text-align: center; font-weight: bold; margin-top: 15px;"></div>
+        </section>
+
+        <!-- Слайд 7: Завершение -->
+        <section class="slide" id="slide-6">
+            <div class="certificate" id="finalCertificate">
+                <div class="icon">🎖️</div>
+                <h2 data-i18n="s7_title">Аттестация пройдена!</h2>
+                <p data-i18n="s7_p1">Ты успешно освоил стандарты сборки напитков и готов применять их в работе.</p>
+                <div class="rank" id="finalRank" data-i18n="s7_rank1">Статус: Оператор 1-го разряда</div>
+                <p style="font-size: 0.9rem; margin-top: 20px; color: #666;" data-i18n="s7_p2">Если забудешь алгоритм — в зоне сборки всегда висят наглядные постеры.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="nav-footer" id="navFooter" style="display: none;">
+        <button class="nav-btn secondary" id="btnPrev" onclick="changeSlide(-1)" disabled data-i18n="btn_back">Назад</button>
+        <button class="nav-btn primary" id="btnNext" onclick="changeSlide(1)" data-i18n="btn_next">Далее</button>
+    </footer>
+</div>
+
+<script>
+    // --- СЛОВАРЬ ПЕРЕВОДОВ ---
+    const translations = {
+        ru: {
+            header_title: "Стандарты сборки", header_subtitle: "Интерактивный курс",
+            lang_title: "Добро пожаловать!", lang_subtitle: "Пожалуйста, выберите язык обучения:",
+            btn_next: "Далее", btn_back: "Назад", btn_start: "Начать", btn_locked: "Выберите ответ",
+            
+            s1_title: "Твоя роль в доставке",
+            s1_p1: "Привет! Твоя задача — собрать заказ так, чтобы Гость получил его идеальным.",
+            s1_p2: "Ошибки на этапе сборки (помятый стакан, неправильная наклейка, незапаянный соусник) приводят к порче продукта и возвратам.",
+            s1_warn: "Используй только ту упаковку, которая утверждена в действующей спецификации. Брать что-то другое запрещено.",
+            s1_p3: "Этот курс научит тебя собирать напитки идеально. За правильные ответы ты будешь получать очки опыта (XP).",
+            
+            s2_title: "Авторский чай / Глинтвейн",
+            s2_p1: "Помни главное правило: мы доставляем только концентрат. Гость сам добавит горячую воду.",
+            s2_p2: "Выполни следующие действия:",
+            s2_li1: "<b>Получи:</b> Бармен отдает стакан (300 мл), закрытый КРАСНОЙ крышкой 90 мм.",
+            s2_li2: "<b>Наклей:</b> Термоэтикетку ровно на нижнюю часть сзади стакана.",
+            s2_li3: "<b>Поставь:</b> Стакан в подставку. Вставь мешалку в переднее отверстие.",
+            s2_mentor: "Если крышка не подходит или повреждена — не пытайся ее закрыть силой. Замени на новую из спецификации.",
+            
+            s3_title: "Бабл-ти (Bubble Cup)",
+            s3_p1: "Здесь есть важный нюанс с топпингом. Твой алгоритм:",
+            s3_li1: "<b>Получи:</b> Напиток в стакане 500 мл и НЕЗАПАЯННЫЙ соусник с тапиокой.",
+            s3_li2: "<b>Запаяй:</b> Соусник с тапиокой в зоне сборки.",
+            s3_li3: "<b>Наклей:</b> Термоэтикетку на нижнюю часть стакана И на запаянный соусник.",
+            s3_li4: "<b>Поставь:</b> Стакан и соусник в переноску, добавь трубочку.",
+            s3_warn: "Никогда не отдавай курьеру незапаянный соусник. Он протечет по дороге.",
+            
+            s4_title: "Практика: Куда клеить этикетку?",
+            s4_p1: "Нажми на правильную зону на каждом стакане, чтобы получить XP и открыть следующий шаг.",
+            s4_zone_bottom: "Нижняя часть", s4_zone_top: "Крышка", s4_cup_tea: "Чай (300мл)", s4_cup_bubble: "Бабл-ти (500мл)",
+            s4_fb_correct: "Отлично! Ты знаешь стандарт. Кнопка 'Далее' разблокирована.",
+            s4_fb_wrong: "Попробуй еще раз (нажми на другую зону).",
+            
+            s5_title: "Практика: Большой заказ",
+            s5_p1: "У Гостя заказ: роллы 10 шт, салаты 10 шт и 2 Бабл-ти. Как безопасно всё упаковать?",
+            s5_opt1: "Упакуй всё в один пакет, чтобы курьеру было удобнее нести.",
+            s5_opt2: "Поставь напитки в угол пакета. Если тяжелые блюда могут их раздавить или залить — упакуй напитки в отдельный пакет.",
+            s5_opt3: "Поставь напитки сверху на контейнеры, чтобы они не пролились.",
+            s5_fb_correct: "Верно! Безопасность напитков — приоритет. Идем дальше.",
+            s5_fb_wrong: "Неверно. Найди правильный вариант.",
+            
+            s6_title: "Аттестация",
+            s6_p1: "Ответь на 5 вопросов, чтобы завершить обучение. За каждый правильный ответ +10 XP.",
+            s6_btn: "Завершить тест",
+            s6_alert: "Пожалуйста, ответь на все вопросы.",
+            s6_pass: "Отлично! 5 из 5. Аттестация пройдена!",
+            s6_fail: "Ты ответил правильно на {score} из 5. Попробуй еще раз, перечитав стандарты.",
+            
+            s7_title: "Аттестация пройдена!",
+            s7_p1: "Ты успешно освоил стандарты сборки напитков и готов применять их в работе.",
+            s7_rank1: "Статус: Оператор 1-го разряда", s7_rank2: "Статус: Мастер сборки (Высший уровень)",
+            s7_p2: "Если забудешь алгоритм — в зоне сборки всегда висят наглядные постеры.",
+            
+            test: [
+                { q: "1. Какую крышку нужно использовать для Авторского чая / Глинтвейна?", options: ["Прозрачную 90 мм", "Красную 90 мм", "Любую, которая подходит по размеру"], correct: 1 },
+                { q: "2. Куда наклеить термоэтикетку на стакане с чаем?", options: ["На крышку", "На нижнюю часть сзади стакана", "На мешалку"], correct: 1 },
+                { q: "3. Что сделать с соусником тапиоки?", options: ["Отдать курьеру как есть", "Запаять его в зоне сборки", "Выбросить и отдать только стакан"], correct: 1 },
+                { q: "4. Как упаковать напитки, если в заказе есть тяжелое горячее и салаты?", options: ["Упаковать все в один пакет", "Упаковать напитки в отдельный пакет, если есть риск деформации", "Отдать без пакета"], correct: 1 },
+                { q: "5. Можно ли использовать упаковку, которой нет в спецификации?", options: ["Да, если она похожа", "Нет, только утвержденную спецификацию", "Да, если закончилась обычная"], correct: 1 }
+            ]
+        },
+        kk: {
+            header_title: "Жинау стандарттары", header_subtitle: "Интерактивті курс",
+            lang_title: "Қош келдіңіз!", lang_subtitle: "Оқу тілін таңдаңыз:",
+            btn_next: "Әрі қарай", btn_back: "Артқа", btn_start: "Бастау", btn_locked: "Жауапты таңдаңыз",
+            
+            s1_title: "Жеткізудегі сенің рөлің",
+            s1_p1: "Сәлем! Сенің міндетің — тапсырысты Қонаққа мінсіз күйде жеткізу үшін жинау.",
+            s1_p2: "Жинау кезеңіндегі қателіктер (мыжылған стақан, дұрыс емес жапсырма, жабылмаған соусник) өнімнің бұзылуына және қайтарымдарға әкеледі.",
+            s1_warn: "Тек қолданыстағы спецификацияда бекітілген қаптаманы ғана пайдаланыңыз. Басқа нәрсені алуға тыйым салынады.",
+            s1_p3: "Бұл курс саған сусындарды мінсіз жинауды үйретеді. Дұрыс жауаптар үшін сен тәжірибе ұпайларын (XP) аласың.",
+            
+            s2_title: "Авторлық шай / Глинтвейн",
+            s2_p1: "Басты қағиданы есте сақта: біз тек концентратты жеткіземіз. Ыстық суды Қонақ өзі қосады.",
+            s2_p2: "Келесі әрекеттерді орында:",
+            s2_li1: "<b>Ал:</b> Бармен 90 мм ҚЫЗЫЛ қақпақпен жабылған стақанды (300 мл) береді.",
+            s2_li2: "<b>Жапсыр:</b> Терможапсырманы стақанның артқы жағының төменгі бөлігіне біркелкі жапсыр.",
+            s2_li3: "<b>Қой:</b> Стақанды тұғырға қой. Араластырғышты алдыңғы тесікке сал.",
+            s2_mentor: "Егер қақпақ сәйкес келмесе немесе бүлінген болса — оны күшпен жабуға тырыспа. Спецификациядан жаңасын ал.",
+            
+            s3_title: "Бабл-ти (Bubble Cup)",
+            s3_p1: "Мұнда топпингке қатысты маңызды нюанс бар. Сенің алгоритмің:",
+            s3_li1: "<b>Ал:</b> 500 мл стақандағы сусын және тапиокасы бар ЖАБЫЛМАҒАН соусник.",
+            s3_li2: "<b>Жаб:</b> Тапиокасы бар соусникті жинау аймағында пісіріп жаб.",
+            s3_li3: "<b>Жапсыр:</b> Терможапсырманы стақанның төменгі бөлігіне ЖӘНЕ жабылған соусникке жапсыр.",
+            s3_li4: "<b>Қой:</b> Стақан мен соусникті тасымалдағышқа сал, түтікше қос.",
+            s3_warn: "Курьерге ешқашан жабылмаған соусникті берме. Ол жолда ағып кетеді.",
+            
+            s4_title: "Тәжірибе: Жапсырманы қайда жапсыру керек?",
+            s4_p1: "XP алу және келесі қадамды ашу үшін әр стақандағы дұрыс аймақты бас.",
+            s4_zone_bottom: "Төменгі бөлігі", s4_zone_top: "Қақпақ", s4_cup_tea: "Шай (300мл)", s4_cup_bubble: "Бабл-ти (500мл)",
+            s4_fb_correct: "Керемет! Сен стандартты білесің. 'Әрі қарай' түймесі ашылды.",
+            s4_fb_wrong: "Қайталап көр (басқа аймақты бас).",
+            
+            s5_title: "Тәжірибе: Үлкен тапсырыс",
+            s5_p1: "Қонақтың тапсырысы: 10 ролл, 10 салат және 2 Бабл-ти. Барлығын қалай қауіпсіз қаптауға болады?",
+            s5_opt1: "Курьерге алып жүру ыңғайлы болуы үшін барлығын бір қапқа сал.",
+            s5_opt2: "Сусындарды қаптың бұрышына қой. Егер ауыр тағамдар оларды мыжып немесе төгіп тастауы мүмкін болса — сусындарды бөлек қапқа сал.",
+            s5_opt3: "Төгілмеуі үшін сусындарды контейнерлердің үстіне қой.",
+            s5_fb_correct: "Дұрыс! Сусындардың қауіпсіздігі — басты басымдық. Әрі қарай жүреміз.",
+            s5_fb_wrong: "Дұрыс емес. Дұрыс нұсқаны тап.",
+            
+            s6_title: "Аттестаттау",
+            s6_p1: "Оқуды аяқтау үшін 5 сұраққа жауап бер. Әр дұрыс жауап үшін +10 XP.",
+            s6_btn: "Тестті аяқтау",
+            s6_alert: "Барлық сұрақтарға жауап беріңіз.",
+            s6_pass: "Керемет! 5-тен 5. Аттестаттаудан өттіңіз!",
+            s6_fail: "Сіз 5 сұрақтың {score} дұрыс жауабын бердіңіз. Стандарттарды қайта оқып, қайталап көріңіз.",
+            
+            s7_title: "Аттестаттаудан өттіңіз!",
+            s7_p1: "Сіз сусындарды жинау стандарттарын сәтті меңгердіңіз және оларды жұмыста қолдануға дайынсыз.",
+            s7_rank1: "Мәртебесі: 1-разрядты оператор", s7_rank2: "Мәртебесі: Жинау шебері (Жоғары деңгей)",
+            s7_p2: "Егер алгоритмді ұмытып қалсаңыз — жинау аймағында әрқашан көрнекі плакаттар ілініп тұрады.",
+            
+            test: [
+                { q: "1. Авторлық шай / Глинтвейн үшін қандай қақпақ қолданылады?", options: ["Мөлдір 90 мм", "Қызыл 90 мм", "Өлшемі сай келетін кез келген"], correct: 1 },
+                { q: "2. Шай құйылған стақанға терможапсырманы қайда жапсыру керек?", options: ["Қақпаққа", "Стақанның артқы жағының төменгі бөлігіне", "Араластырғышқа"], correct: 1 },
+                { q: "3. Тапиокасы бар соусникті не істеу керек?", options: ["Курьерге сол күйінде беру", "Жинау аймағында пісіріп жабу", "Лақтырып тастап, тек стақанды беру"], correct: 1 },
+                { q: "4. Егер тапсырыста ауыр ыстық тағам мен салаттар болса, сусындарды қалай қаптау керек?", options: ["Барлығын бір қапқа салу", "Деформация қаупі болса, сусындарды бөлек қапқа салу", "Қапсыз беру"], correct: 1 },
+                { q: "5. Спецификацияда жоқ қаптаманы пайдалануға бола ма?", options: ["Иә, егер ұқсас болса", "Жоқ, тек бекітілген спецификацияны", "Иә, егер кәдімгісі бітсе"], correct: 1 }
+            ]
+        },
+        uz: {
+            header_title: "Yig'ish standartlari", header_subtitle: "Interaktiv kurs",
+            lang_title: "Xush kelibsiz!", lang_subtitle: "Iltimos, o'quv tilini tanlang:",
+            btn_next: "Keyingisi", btn_back: "Orqaga", btn_start: "Boshlash", btn_locked: "Javobni tanlang",
+            
+            s1_title: "Yetkazib berishdagi rolingiz",
+            s1_p1: "Salom! Sizning vazifangiz — buyurtmani Mehmon mukammal holatda olishi uchun yig'ish.",
+            s1_p2: "Yig'ish bosqichidagi xatolar (ezilgan stakan, noto'g'ri stiker, yopilmagan sousnik) mahsulotning buzilishiga va qaytarilishlarga olib keladi.",
+            s1_warn: "Faqat amaldagi spetsifikatsiyada tasdiqlangan qadoqdan foydalaning. Boshqa narsalarni olish taqiqlanadi.",
+            s1_p3: "Ushbu kurs sizga ichimliklarni mukammal yig'ishni o'rgatadi. To'g'ri javoblar uchun siz tajriba ballari (XP) olasiz.",
+            
+            s2_title: "Mualliflik choyi / Glintveyn",
+            s2_p1: "Asosiy qoidani esda tuting: biz faqat konsentrat yetkazib beramiz. Qaynoq suvni Mehmon o'zi qo'shadi.",
+            s2_p2: "Quyidagi amallarni bajaring:",
+            s2_li1: "<b>Oling:</b> Barmen 90 mm QIZIL qopqoq bilan yopilgan stakanni (300 ml) beradi.",
+            s2_li2: "<b>Yopishtiring:</b> Termostikerni stakanning orqa qismining pastki qismiga tekis yopishtiring.",
+            s2_li3: "<b>Qo'ying:</b> Stakanni taglikka qo'ying. Aralashtirgichni old teshikka joylashtiring.",
+            s2_mentor: "Agar qopqoq mos kelmasa yoki shikastlangan bo'lsa — uni kuch bilan yopishga urinmang. Spetsifikatsiyadan yangisini oling.",
+            
+            s3_title: "Babl-ti (Bubble Cup)",
+            s3_p1: "Bu erda topping bilan bog'liq muhim nuance bor. Sizning algoritmingiz:",
+            s3_li1: "<b>Oling:</b> 500 ml stakandagi ichimlik va tapiokali YOPILMAGAN sousnik.",
+            s3_li2: "<b>Yoping:</b> Tapiokali sousnikni yig'ish zonasida payvandlang (yopishtiring).",
+            s3_li3: "<b>Yopishtiring:</b> Termostikerni stakanning pastki qismiga VA yopilgan sousnikka yopishtiring.",
+            s3_li4: "<b>Qo'ying:</b> Stakan va sousnikni tashish idishiga soling, trubka qo'shing.",
+            s3_warn: "Hech qachon kuryerga yopilmagan sousnikni bermang. U yo'lda oqib ketadi.",
+            
+            s4_title: "Amaliyot: Stikerni qayerga yopishtirish kerak?",
+            s4_p1: "XP olish va keyingi qadamni ochish uchun har bir stakandagi to'g'ri zonani bosing.",
+            s4_zone_bottom: "Pastki qism", s4_zone_top: "Qopqoq", s4_cup_tea: "Choy (300ml)", s4_cup_bubble: "Babl-ti (500ml)",
+            s4_fb_correct: "Ajoyib! Siz standartni bilasiz. 'Keyingisi' tugmasi ochildi.",
+            s4_fb_wrong: "Yana urinib ko'ring (boshqa zonani bosing).",
+            
+            s5_title: "Amaliyot: Katta buyurtma",
+            s5_p1: "Mehmonning buyurtmasi: 10 ta roll, 10 ta salat va 2 ta Babl-ti. Hammasini qanday qilib xavfsiz qadoqlash mumkin?",
+            s5_opt1: "Kuryerga olib yurish qulay bo'lishi uchun hammasini bitta paketga soling.",
+            s5_opt2: "Ichimliklarni paketning burchagiga qo'ying. Agar og'ir taomlar ularni ezishi yoki to'kib yuborishi mumkin bo'lsa — ichimliklarni alohida paketga qadoqlang.",
+            s5_opt3: "To'kilmasligi uchun ichimliklarni konteynerlar ustiga qo'ying.",
+            s5_fb_correct: "To'g'ri! Ichimliklar xavfsizligi — ustuvor vazifa. Davom etamiz.",
+            s5_fb_wrong: "Noto'g'ri. To'g'ri variantni toping.",
+            
+            s6_title: "Attestatsiya",
+            s6_p1: "O'qishni yakunlash uchun 5 ta savolga javob bering. Har bir to'g'ri javob uchun +10 XP.",
+            s6_btn: "Testni yakunlash",
+            s6_alert: "Iltimos, barcha savollarga javob bering.",
+            s6_pass: "Ajoyib! 5 dan 5. Attestatsiyadan o'tdingiz!",
+            s6_fail: "Siz 5 ta savoldan {score} tasiga to'g'ri javob berdingiz. Standartlarni qayta o'qib, yana urinib ko'ring.",
+            
+            s7_title: "Attestatsiya muvaffaqiyatli o'tdi!",
+            s7_p1: "Siz ichimliklarni yig'ish standartlarini muvaffaqiyatli o'zlashtirdingiz va ularni ishda qo'llashga tayyorsiz.",
+            s7_rank1: "Maqom: 1-toifali operator", s7_rank2: "Maqom: Yig'ish ustasi (Oliy daraja)",
+            s7_p2: "Agar algoritmni unutib qo'ysangiz — yig'ish zonasida har doim ko'rgazmali plakatlar osilgan.",
+            
+            test: [
+                { q: "1. Mualliflik choyi / Glintveyn uchun qanday qopqoq ishlatiladi?", options: ["Shaffof 90 mm", "Qizil 90 mm", "O'lchamiga mos keladigan har qanday"], correct: 1 },
+                { q: "2. Choy solingan stakanga termostikerni qayerga yopishtirish kerak?", options: ["Qopqoqqa", "Stakanning orqa qismining pastki qismiga", "Aralashtirgichga"], correct: 1 },
+                { q: "3. Tapiokali sousnik bilan nima qilish kerak?", options: ["Kuryerga boricha berish", "Yig'ish zonasida payvandlash (yopish)", "Tashlab yuborib, faqat stakanni berish"], correct: 1 },
+                { q: "4. Agar buyurtmada og'ir issiq taom va salatlar bo'lsa, ichimliklarni qanday qadoqlash kerak?", options: ["Hammasini bitta paketga qadoqlash", "Deformatsiya xavfi bo'lsa, ichimliklarni alohida paketga qadoqlash", "Paketsiz berish"], correct: 1 },
+                { q: "5. Spetsifikatsiyada yo'q qadoqdan foydalanish mumkinmi?", options: ["Ha, agar u o'xshash bo'lsa", "Yo'q, faqat tasdiqlangan spetsifikatsiyadan", "Ha, agar oddiysi tugagan bo'lsa"], correct: 1 }
+            ]
+        },
+        ky: {
+            header_title: "Жыйноо стандарттары", header_subtitle: "Интерактивдүү курс",
+            lang_title: "Кош келиңиз!", lang_subtitle: "Окуу тилин тандаңыз:",
+            btn_next: "Кийинки", btn_back: "Артка", btn_start: "Баштоо", btn_locked: "Жоопту тандаңыз",
+            
+            s1_title: "Жеткирүүдөгү сиздин ролуңуз",
+            s1_p1: "Салам! Сиздин милдетиңиз — буйрутманы Конокко идеалдуу түрдө жеткирүү үчүн жыйноо.",
+            s1_p2: "Жыйноо этабындагы каталар (бырыңкы стакан, туура эмес жапшырма, жабылбаган соусник) продукциянын бузулушуна жана кайтарымдарга алып келет.",
+            s1_warn: "Колдонуудагы спецификацияда бекитилген таңгакты гана колдонуңуз. Башка нерсени алууга тыюу салынат.",
+            s1_p3: "Бул курс сизди суусундуктарды идеалдуу жыйноого үйрөтөт. Туура жооптор үчүн сиз тажрыйба упайларын (XP) аласыз.",
+            
+            s2_title: "Автордук чай / Глинтвейн",
+            s2_p1: "Негизги эрежени эстеп кал: биз концентратты гана жеткиребиз. Ысык сууну Конок өзү кошот.",
+            s2_p2: "Төмөнкү аракеттерди аткар:",
+            s2_li1: "<b>Ал:</b> Бармен 90 мм КЫЗЫЛ капкак менен жабылган стаканды (300 мл) берет.",
+            s2_li2: "<b>Жапшыр:</b> Терможапшырманы стакандын арткы бөлүгүнүн төмөнкү бөлүгүнө так жапшыр.",
+            s2_li3: "<b>Кой:</b> Стаканды тактайга кой. Аралаштыргычты алдыңкы тешикке сал.",
+            s2_mentor: "Эгер капкак туура келбесе же бузулган болсо — аны күч менен жабууга аракет кылба. Спецификациядан жаңысын ал.",
+            
+            s3_title: "Бабл-ти (Bubble Cup)",
+            s3_p1: "Бул жерде топпингге байланыштуу маанилүү нюанс бар. Сиздин алгоритмиңиз:",
+            s3_li1: "<b>Ал:</b> 500 мл стакандагы суусундук жана тапиокасы бар ЖАБЫЛБАГАН соусник.",
+            s3_li2: "<b>Жап:</b> Тапиокасы бар соусникти жыйноо аймагында ширетип жап.",
+            s3_li3: "<b>Жапшыр:</b> Терможапшырманы стакандын төмөнкү бөлүгүнө ЖАНА жабылган соусникке жапшыр.",
+            s3_li4: "<b>Кой:</b> Стакан менен соусникти ташуучуга сал, түтүкчө кош.",
+            s3_warn: "Курьерге эч качан жабылбаган соусникти бербе. Ал жолдо агып кетет.",
+            
+            s4_title: "Практика: Жапшырманы кайда жапшыруу керек?",
+            s4_p1: "XP алуу жана кийинки кадамды ачуу үчүн ар бир стакандагы туура зонаны бас.",
+            s4_zone_bottom: "Төмөнкү бөлүгү", s4_zone_top: "Капкак", s4_cup_tea: "Чай (300мл)", s4_cup_bubble: "Бабл-ти (500мл)",
+            s4_fb_correct: "Эң сонун! Сиз стандартты билесиз. 'Кийинки' баскычы ачылды.",
+            s4_fb_wrong: "Кайра аракет кыл (башка зонаны бас).",
+            
+            s5_title: "Практика: Чоң буйрутма",
+            s5_p1: "Коноктун буйрутмасы: 10 ролл, 10 салат жана 2 Бабл-ти. Баарын кантип коопсуз таңгактоо керек?",
+            s5_opt1: "Курьерге алып жүрүү ыңгайлуу болуш үчүн баарын бир баштыкка сал.",
+            s5_opt2: "Суусундуктарды баштыктын бурчуна кой. Эгер оор тамактар аларды басып же төгүп салса — суусундуктарды өзүнчө баштыкка таңгакта.",
+            s5_opt3: "Төгүлбөшү үчүн суусундуктарды контейнерлердин үстүнө кой.",
+            s5_fb_correct: "Туура! Суусундуктардын коопсуздугу — биринчи орунда. Улантабыз.",
+            s5_fb_wrong: "Туура эмес. Туура вариантты тап.",
+            
+            s6_title: "Аттестация",
+            s6_p1: "Окууну аяктоо үчүн 5 суроого жооп бер. Ар бир туура жооп үчүн +10 XP.",
+            s6_btn: "Тестти аяктоо",
+            s6_alert: "Сураныч, бардык суроолорго жооп бериңиз.",
+            s6_pass: "Эң сонун! 5тен 5. Аттестациядан өттүңүз!",
+            s6_fail: "Сиз 5 суроонун {score} туура жообун бердиңиз. Стандарттарды кайра окуп, дагы аракет кылыңыз.",
+            
+            s7_title: "Аттестациядан өттүңүз!",
+            s7_p1: "Сиз суусундуктарды жыйноо стандарттарын ийгиликтүү өздөштүрдүңүз жана аларды иш жүзүндө колдонууга даярсыз.",
+            s7_rank1: "Статус: 1-разряддагы оператор", s7_rank2: "Статус: Жыйноо чебери (Жогорку деңгээл)",
+            s7_p2: "Эгер алгоритмди унутуп калсаңыз — жыйноо аймагында ар дайым көрсөтмө плакаттар илинип турат.",
+            
+            test: [
+                { q: "1. Автордук чай / Глинтвейн үчүн кандай капкак колдонулат?", options: ["Тунук 90 мм", "Кызыл 90 мм", "Өлчөмү туура келген каалаган"], correct: 1 },
+                { q: "2. Чай куйулган стаканга терможапшырманы кайда жапшыруу керек?", options: ["Капкакка", "Стакандын арткы бөлүгүнүн төмөнкү бөлүгүнө", "Аралаштыргычка"], correct: 1 },
+                { q: "3. Тапиокасы бар соусникти эмне кылуу керек?", options: ["Курьерге ошол бойдон берүү", "Жыйноо аймагында ширетип жабуу", "Ыргытып, стаканды гана берүү"], correct: 1 },
+                { q: "4. Эгер буйрутмада оор ысык тамак жана салаттар болсо, суусундуктарды кантип таңгактоо керек?", options: ["Баарын бир баштыкка салуу", "Деформация коркунучу болсо, суусундуктарды өзүнчө баштыкка салуу", "Баштыксыз берүү"], correct: 1 },
+                { q: "5. Спецификацияда жок таңгакты колдонууга болобу?", options: ["Ооба, эгер окшош болсо", "Жок, тек бекитилген спецификацияны", "Ооба, эгер кадимкиси бүтсө"], correct: 1 }
+            ]
+        },
+        tg: {
+            header_title: "Стандартҳои ҷамъоварӣ", header_subtitle: "Курси интерактивӣ",
+            lang_title: "Хуш омадед!", lang_subtitle: "Лутфан, забони таълимро интихоб кунед:",
+            btn_next: "Оянда", btn_back: "Бозгашт", btn_start: "Оғоз", btn_locked: "Ҷавобро интихоб кунед",
+            
+            s1_title: "Нақши шумо дар расонидан",
+            s1_p1: "Салом! Вазифаи шумо — фармоишро ба тавре ҷамъ овардан аст, ки Мизоҷ онро комил гирад.",
+            s1_p2: "Хатоҳо дар марҳилаи ҷамъоварӣ (шикастани стакан, стикери нодуруст, соусники кушод) ба вайроншавии маҳсулот ва баргардонидан оварда мерасонанд.",
+            s1_warn: "Танҳо бастаеро истифода баред, ки дар спецификатсияи амалкунанда тасдиқ шудааст. Гирифтани чизи дигар манъ аст.",
+            s1_p3: "Ин курс ба шумо ёд медиҳад, ки нӯшокиҳоро комил ҷамъ оваред. Барои ҷавобҳои дуруст шумо холҳои таҷриба (XP) мегиред.",
+            
+            s2_title: "Чойи муаллифӣ / Глинтвейн",
+            s2_p1: "Қоидаи асосиро дар ёд доред: мо танҳо консентрат мерасонем. Оби ҷӯшро Мизоҷ худаш илова мекунад.",
+            s2_p2: "Амалҳои зеринро иҷро кунед:",
+            s2_li1: "<b>Гиред:</b> Бармен стакани (300 мл) бо қалпоқи СУРХИ 90 мм пӯшидашударо медиҳад.",
+            s2_li2: "<b>Часбонед:</b> Термостикерро ба қисми поёнии қафои стакан баробар часбонед.",
+            s2_li3: "<b>Гузоред:</b> Стаканро ба поя гузоред. Омезро ба сӯрохи пеш ҷойгир кунед.",
+            s2_mentor: "Агар қалпоқ мувофиқ набошад ё вайрон шуда бошад — кӯшиш накунед, ки онро бо зӯр пӯшед. Аз спецификатсия нав гиред.",
+            
+            s3_title: "Бабл-ти (Bubble Cup)",
+            s3_p1: "Дар ин ҷо як нуктаи муҳим дар бораи топпинг ҳаст. Алгоритми шумо:",
+            s3_li1: "<b>Гиред:</b> Нӯшокӣ дар стакани 500 мл ва соусники КУШОДА бо тапиока.",
+            s3_li2: "<b>Паҳн кунед:</b> Соусники тапиокаро дар минтақаи ҷамъоварӣ пайваст кунед (пӯшед).",
+            s3_li3: "<b>Часбонед:</b> Термостикерро ба қисми поёнии стакан ВА ба соусники пӯшидашуда часбонед.",
+            s3_li4: "<b>Гузоред:</b> Стакан ва соусникро ба зарф гузоред, найча илова кунед.",
+            s3_warn: "Ҳеҷ гоҳ ба курьер соусники кушодро надиҳед. Он дар роҳ мерезад.",
+            
+            s4_title: "Амалия: Стикерро куҷо часбонем?",
+            s4_p1: "Барои гирифтани XP ва кушодани қадами навбатӣ ба минтақаи дуруст дар ҳар як стакан зер кунед.",
+            s4_zone_bottom: "Қисми поёнӣ", s4_zone_top: "Қалпоқ", s4_cup_tea: "Чой (300мл)", s4_cup_bubble: "Бабл-ти (500мл)",
+            s4_fb_correct: "Аъло! Шумо стандартро медонед. Тугмаи 'Оянда' кушода шуд.",
+            s4_fb_wrong: "Бори дигар кӯшиш кунед (ба минтақаи дигар зер кунед).",
+            
+            s5_title: "Амалия: Фармоиши калон",
+            s5_p1: "Фармоиши Мизоҷ: 10 ролл, 10 салат ва 2 Бабл-ти. Чӣ тавр ҳамаро бехатар бастабандӣ кунем?",
+            s5_opt1: "Ҳамаро ба як халта гузоред, то курьер барои бурдан қулай бошад.",
+            s5_opt2: "Нӯшокиҳоро ба гӯшаи халта гузоред. Агар таомҳои вазнин онҳоро пахш карда тавонанд ё рехта шаванд — нӯшокиҳоро дар халтаи алоҳида бастабандӣ кунед.",
+            s5_opt3: "Барои рехта нашудан нӯшокиҳоро болои контейнерҳо гузоред.",
+            s5_fb_correct: "Дуруст! Бехатарии нӯшокиҳо — афзалиятнок аст. Идома медиҳем.",
+            s5_fb_wrong: "Нодуруст. Варианти дурустро ёбед.",
+            
+            s6_title: "Аттестатсия",
+            s6_p1: "Барои анҷом додани таълим ба 5 савол ҷавоб диҳед. Барои ҳар ҷавоби дуруст +10 XP.",
+            s6_btn: "Анҷом додани тест",
+            s6_alert: "Лутфан, ба ҳамаи саволҳо ҷавоб диҳед.",
+            s6_pass: "Аъло! 5 аз 5. Аттестатсия гузашт!",
+            s6_fail: "Шумо ба {score} савол аз 5 дуруст ҷавоб додед. Стандартҳоро аз нав хонда, бори дигар кӯшиш кунед.",
+            
+            s7_title: "Аттестатсия гузашт!",
+            s7_p1: "Шумо стандартҳои ҷамъоварии нӯшокиҳоро бомуваффақият азхуд кардед ва омодаед, ки онҳоро дар кор татбиқ кунед.",
+            s7_rank1: "Мақом: Оператори разряди 1", s7_rank2: "Мақом: Устои ҷамъоварӣ (Сатҳи олӣ)",
+            s7_p2: "Агар алгоритмро фаромӯш кунед — дар минтақаи ҷамъоварӣ ҳамеша плакатҳои аёнӣ овезон ҳастанд.",
+            
+            test: [
+                { q: "1. Барои Чойи муаллифӣ / Глинтвейн кадом қалпоқ истифода мешавад?", options: ["Шаффоф 90 мм", "Сурхи 90 мм", "Ҳар кадоме, ки андозааш мувофиқ бошад"], correct: 1 },
+                { q: "2. Ба стакани чой термостикерро куҷо часбонем?", options: ["Ба қалпоқ", "Ба қисми поёнии қафои стакан", "Ба омез"], correct: 1 },
+                { q: "3. Бо соусники тапиока чӣ кор кардан лозим аст?", options: ["Ба курьер ҳамон тавр додан", "Дар минтақаи ҷамъоварӣ пайваст кардан (пӯшондан)", "Партофта, танҳо стаканро додан"], correct: 1 },
+                { q: "4. Агар дар фармоиш таоми гарми вазнин ва салатҳо бошанд, нӯшокиҳоро чӣ тавр бастабандӣ кунем?", options: ["Ҳамаро ба як халта бастабандӣ кардан", "Агар хатари деформатсия бошад, нӯшокиҳоро дар халтаи алоҳида бастабандӣ кардан", "Бе халта додан"], correct: 1 },
+                { q: "5. Оё истифодаи бастае, ки дар спецификатсия нест, мумкин аст?", options: ["Бале, агар монанд бошад", "Не, танҳо спецификатсияи тасдиқшуда", "Бале, агар оддӣ тамом шуда бошад"], correct: 1 }
+            ]
+        }
+    };
+
+    // --- БАЗОВАЯ ЛОГИКА ---
+    let currentLang = 'ru';
+    let currentStep = -1;
+    let totalXP = 0;
+    let cup1Done = false;
+    let cup2Done = false;
+    let caseAnswered = false;
+
+    const slides = document.querySelectorAll('.slide');
+    const progressBar = document.getElementById('progressBar');
+    const btnPrev = document.getElementById('btnPrev');
+    const btnNext = document.getElementById('btnNext');
+    const xpValueEl = document.getElementById('xpValue');
+    const xpBadge = document.getElementById('xpBadge');
+    const toastContainer = document.getElementById('toast-container');
+    const navFooter = document.getElementById('navFooter');
+
+    // Выбор языка
+    function selectLanguage(lang) {
+        currentLang = lang;
+        currentStep = 1; 
+        navFooter.style.display = 'flex';
+        updateLanguageUI();
+        updateUI();
+    }
+
+    // Применение переводов
+    function updateLanguageUI() {
+        const t = translations[currentLang];
+        
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (t[key]) {
+                el.innerHTML = t[key];
+            }
+        });
+
+        document.getElementById('headerTitle').textContent = t.header_title;
+        document.getElementById('headerSubtitle').textContent = t.header_subtitle;
+
+        renderTest();
+    }
+
+    // Обновление интерфейса
+    function updateUI() {
+        if (currentStep === -1) return;
+
+        slides.forEach((slide, index) => {
+            slide.classList.remove('active');
+            if (index === currentStep) slide.classList.add('active');
+        });
+
+        btnPrev.disabled = currentStep === 1;
+        
+        // Логика кнопки "Далее"
+        if (currentStep === 4) { // Стаканы (slide-3)
+            btnNext.disabled = !(cup1Done && cup2Done);
+            btnNext.style.opacity = (cup1Done && cup2Done) ? "1" : "0.5";
+            btnNext.textContent = (cup1Done && cup2Done) ? translations[currentLang].btn_next : translations[currentLang].btn_locked;
+        } else if (currentStep === 5) { // Кейс (slide-4)
+            btnNext.disabled = !caseAnswered;
+            btnNext.style.opacity = caseAnswered ? "1" : "0.5";
+            btnNext.textContent = caseAnswered ? translations[currentLang].btn_next : translations[currentLang].btn_locked;
+        } else {
+            btnNext.disabled = false;
+            btnNext.style.opacity = "1";
+            if (currentStep === 1) {
+                btnNext.textContent = translations[currentLang].btn_start;
+            } else {
+                btnNext.textContent = translations[currentLang].btn_next;
+            }
+        }
+
+        // Управление футером
+        if (currentStep === 6) {
+            btnNext.style.display = 'none'; // Тест (slide-5)
+        } else if (currentStep === 7) { // Завершение (slide-6)
+            btnNext.style.display = 'none';
+            btnPrev.style.display = 'none';
+            navFooter.style.display = 'none'; 
+            document.getElementById('finalCertificate').style.display = 'block'; 
+        } else {
+            btnNext.style.display = 'block';
+            btnPrev.style.display = 'block';
+        }
+
+        // Прогресс-бар
+        const progress = ((currentStep - 1) / 6) * 100;
+        progressBar.style.width = `${progress}%`;
+    }
+
+    function changeSlide(direction) {
+        currentStep += direction;
+        if (currentStep < 1) currentStep = 1;
+        if (currentStep > 7) currentStep = 7;
+        updateUI();
+    }
+
+    // --- СИСТЕМА XP ---
+    function addXP(amount) {
+        totalXP += amount;
+        xpValueEl.textContent = totalXP;
+        
+        xpBadge.classList.add('bump');
+        setTimeout(() => xpBadge.classList.remove('bump'), 300);
+
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.textContent = `+${amount} XP`;
+        toastContainer.appendChild(toast);
+        setTimeout(() => toast.remove(), 2000);
+    }
+
+    // --- ИГРА (Стаканы) ---
+    function checkGame(element, isCorrect, cupId) {
+        if (element.style.pointerEvents === 'none') return;
+        const t = translations[currentLang];
+
+        if (isCorrect) {
+            element.classList.add('correct-zone');
+            element.textContent = "✅ " + t.s4_zone_bottom;
+            element.style.pointerEvents = 'none'; 
+            
+            if ((cupId === 'cup1' && !cup1Done) || (cupId === 'cup2' && !cup2Done)) {
+                addXP(10); 
+                if(cupId === 'cup1') cup1Done = true;
+                if(cupId === 'cup2') cup2Done = true;
+            }
+
+            if (cup1Done && cup2Done) {
+                document.getElementById('gameFeedback').innerHTML = `<span style="color: var(--success);">${t.s4_fb_correct}</span>`;
+                updateUI(); 
+            }
+        } else {
+            element.style.borderColor = "var(--error)";
+            element.style.color = "var(--error)";
+            element.textContent = "❌";
+            document.getElementById('gameFeedback').innerHTML = `<span style="color: var(--error);">${t.s4_fb_wrong}</span>`;
+            
+            setTimeout(() => {
+                element.style.borderColor = "#999";
+                element.style.color = "#333";
+                element.textContent = t.s4_zone_top; 
+            }, 1000);
+        }
+    }
+
+    // --- КЕЙС (Упаковка) ---
+    function handleQuizCase(element, isCorrect) {
+        if (caseAnswered) return;
+        const t = translations[currentLang];
+
+        if (isCorrect) {
+            element.classList.add('correct');
+            document.getElementById('quizCaseFeedback').innerHTML = `<span style="color: var(--success);">${t.s5_fb_correct}</span>`;
+            caseAnswered = true;
+            addXP(20);
+            updateUI(); 
+        } else {
+            element.classList.add('incorrect');
+            document.getElementById('quizCaseFeedback').innerHTML = `<span style="color: var(--error);">${t.s5_fb_wrong}</span>`;
+        }
+    }
+
+    // --- АТТЕСТАЦИЯ ---
+    function renderTest() {
+        const container = document.getElementById('test-container');
+        container.innerHTML = ''; 
+        const testQuestions = translations[currentLang].test;
+
+        testQuestions.forEach((item, qIndex) => {
+            const div = document.createElement('div');
+            div.style.marginBottom = '20px';
+            div.innerHTML = `<p style="font-weight: 600; margin-bottom: 10px;">${item.q}</p>`;
+            
+            item.options.forEach((opt, oIndex) => {
+                const label = document.createElement('label');
+                label.style.display = 'block';
+                label.style.padding = '10px';
+                label.style.background = '#FAFAFA';
+                label.style.border = '1px solid #DDD';
+                label.style.borderRadius = '8px';
+                label.style.marginBottom = '8px';
+                label.style.cursor = 'pointer';
+                
+                label.innerHTML = `
+                    <input type="radio" name="q${qIndex}" value="${oIndex}" style="margin-right: 10px; transform: scale(1.2);">
+                    ${opt}
+                `;
+                div.appendChild(label);
+            });
+            container.appendChild(div);
+        });
+    }
+
+    function submitTest() {
+        let score = 0;
+        let allAnswered = true;
+        const feedback = document.getElementById('testFeedback');
+        const t = translations[currentLang];
+        const testQuestions = t.test;
+
+        testQuestions.forEach((item, qIndex) => {
+            const selected = document.querySelector(`input[name="q${qIndex}"]:checked`);
+            if (!selected) {
+                allAnswered = false;
+            } else if (parseInt(selected.value) === item.correct) {
+                score++;
+            }
+        });
+
+        if (!allAnswered) {
+            feedback.innerHTML = `<span style="color: var(--error);">${t.s6_alert}</span>`;
+            return;
+        }
+
+        if (score === 5) {
+            feedback.innerHTML = `<span style="color: var(--success);">${t.s6_pass}</span>`;
+            addXP(50);
+            document.getElementById('btnSubmitTest').style.display = 'none';
+            
+            setTimeout(() => {
+                const rankEl = document.getElementById('finalRank');
+                if (totalXP >= 80) {
+                    rankEl.textContent = t.s7_rank2;
+                } else {
+                    rankEl.textContent = t.s7_rank1;
+                }
+                changeSlide(1);
+            }, 1500);
+        } else {
+            feedback.innerHTML = `<span style="color: var(--error);">${t.s6_fail.replace('{score}', score)}</span>`;
+        }
+    }
+
+    // Инициализация
+    updateUI();
+</script>
+</body>
+</html>
