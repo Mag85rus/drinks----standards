@@ -159,20 +159,20 @@
         .lang-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 15px;
+            gap: 10px;
             margin-top: 20px;
         }
 
         .lang-btn {
             display: flex;
             align-items: center;
-            padding: 15px 20px;
+            padding: 12px 20px;
             background-color: #FAFAFA;
             border: 2px solid #E0E0E0;
             border-radius: var(--border-radius);
             cursor: pointer;
             transition: all 0.2s;
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
             color: var(--text-main);
         }
@@ -184,7 +184,7 @@
         }
 
         .lang-flag {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             margin-right: 15px;
         }
 
@@ -229,7 +229,7 @@
             border-radius: var(--border-radius);
             margin-bottom: 10px;
             text-align: left;
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: var(--text-main);
             cursor: pointer;
             transition: all 0.2s;
@@ -295,7 +295,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #333;
             text-align: center;
             transition: all 0.3s;
@@ -400,7 +400,7 @@
 
         .certificate h2 { color: #F57F17; margin-bottom: 15px; font-size: 1.5rem;}
         .certificate .icon { font-size: 4rem; margin-bottom: 15px; }
-        .certificate .rank { font-size: 1.2rem; font-weight: bold; color: var(--brand-red); margin-top: 10px;}
+        .certificate .rank { font-size: 1.1rem; font-weight: bold; color: var(--brand-red); margin-top: 10px;}
 
     </style>
 </head>
@@ -428,6 +428,7 @@
             <p data-i18n="lang_subtitle">Пожалуйста, выберите язык обучения:</p>
             <div class="lang-grid">
                 <button class="lang-btn" onclick="selectLanguage('ru')"><span class="lang-flag">🇷🇺</span> Русский</button>
+                <button class="lang-btn" onclick="selectLanguage('en')"><span class="lang-flag">🇬🇧</span> English</button>
                 <button class="lang-btn" onclick="selectLanguage('kk')"><span class="lang-flag">🇰🇿</span> Қазақша</button>
                 <button class="lang-btn" onclick="selectLanguage('uz')"><span class="lang-flag">🇺🇿</span> O'zbekcha</button>
                 <button class="lang-btn" onclick="selectLanguage('ky')"><span class="lang-flag">🇰🇬</span> Кыргызча</button>
@@ -501,7 +502,7 @@
             <p data-i18n="s5_p1">У Гостя заказ: роллы 10 шт, салаты 10 шт и 2 Бабл-ти. Как безопасно всё упаковать?</p>
             
             <button class="option-btn" onclick="handleQuizCase(this, false)" data-i18n="s5_opt1">Упакуй всё в один пакет, чтобы курьеру было удобнее нести.</button>
-            <button class="option-btn" onclick="handleQuizCase(this, true)" data-i18n="s5_opt2">Поставь напитки в угол пакета. Если тяжелые блюда могут их раздавить или залить — упакуй напитки в отдельный пакет.</button>
+            <button class="option-btn" onclick="handleQuizCase(this, true)" data-i18n="s5_opt2">Поставь напитки в угол пакета. Если блюда могут их раздавить или нарушить целостность упаковки — упакуй напитки в отдельный пакет.</button>
             <button class="option-btn" onclick="handleQuizCase(this, false)" data-i18n="s5_opt3">Поставь напитки сверху на контейнеры, чтобы они не пролились.</button>
             
             <div id="quizCaseFeedback" style="text-align: center; font-weight: bold; margin-top: 10px; min-height: 24px;"></div>
@@ -575,7 +576,7 @@
             s5_title: "Практика: Большой заказ",
             s5_p1: "У Гостя заказ: роллы 10 шт, салаты 10 шт и 2 Бабл-ти. Как безопасно всё упаковать?",
             s5_opt1: "Упакуй всё в один пакет, чтобы курьеру было удобнее нести.",
-            s5_opt2: "Поставь напитки в угол пакета. Если тяжелые блюда могут их раздавить или залить — упакуй напитки в отдельный пакет.",
+            s5_opt2: "Поставь напитки в угол пакета. Если блюда могут их раздавить или нарушить целостность упаковки — упакуй напитки в отдельный пакет.",
             s5_opt3: "Поставь напитки сверху на контейнеры, чтобы они не пролились.",
             s5_fb_correct: "Верно! Безопасность напитков — приоритет. Идем дальше.",
             s5_fb_wrong: "Неверно. Найди правильный вариант.",
@@ -596,8 +597,69 @@
                 { q: "1. Какую крышку нужно использовать для Авторского чая / Глинтвейна?", options: ["Прозрачную 90 мм", "Красную 90 мм", "Любую, которая подходит по размеру"], correct: 1 },
                 { q: "2. Куда наклеить термоэтикетку на стакане с чаем?", options: ["На крышку", "На нижнюю часть сзади стакана", "На мешалку"], correct: 1 },
                 { q: "3. Что сделать с соусником тапиоки?", options: ["Отдать курьеру как есть", "Запаять его в зоне сборки", "Выбросить и отдать только стакан"], correct: 1 },
-                { q: "4. Как упаковать напитки, если в заказе есть тяжелое горячее и салаты?", options: ["Упаковать все в один пакет", "Упаковать напитки в отдельный пакет, если есть риск деформации", "Отдать без пакета"], correct: 1 },
+                { q: "4. Как упаковать напитки, если в заказе есть много позиций кухни?", options: ["Упаковать все в один пакет", "Упаковать напитки в отдельный пакет, если есть риск деформации", "Отдать без пакета"], correct: 1 },
                 { q: "5. Можно ли использовать упаковку, которой нет в спецификации?", options: ["Да, если она похожа", "Нет, только утвержденную спецификацию", "Да, если закончилась обычная"], correct: 1 }
+            ]
+        },
+        en: {
+            header_title: "Packing Standards", header_subtitle: "Interactive Course",
+            lang_title: "Welcome!", lang_subtitle: "Please select a language:",
+            btn_next: "Next", btn_back: "Back", btn_start: "Start", btn_locked: "Select an answer",
+            
+            s1_title: "Your role in delivery",
+            s1_p1: "Hi! Your task is to pack the order so the Guest receives it perfectly.",
+            s1_p2: "Mistakes during packing (crushed cup, wrong sticker, unsealed sauce cup) lead to product spoilage and returns.",
+            s1_warn: "Use only the packaging approved in the current specification. Using anything else is prohibited.",
+            s1_p3: "This course will teach you how to pack drinks perfectly. You will earn experience points (XP) for correct answers.",
+            
+            s2_title: "Signature Tea / Mulled Wine",
+            s2_p1: "Remember the main rule: we deliver only the concentrate. The Guest adds hot water themselves.",
+            s2_p2: "Follow these steps:",
+            s2_li1: "<b>Get:</b> The bartender hands over a cup (300 ml) closed with a RED lid (90 mm).",
+            s2_li2: "<b>Stick:</b> Apply the thermal sticker exactly to the lower back part of the cup.",
+            s2_li3: "<b>Place:</b> Put the cup in the holder. Insert the stirrer into the front hole.",
+            s2_mentor: "If the lid doesn't fit or is damaged — do not try to force it. Replace it with a new one from the specification.",
+            
+            s3_title: "Bubble Tea (Bubble Cup)",
+            s3_p1: "There is an important nuance with the topping here. Your algorithm:",
+            s3_li1: "<b>Get:</b> Drink in a 500 ml cup and an UNSEALED sauce cup with tapioca.",
+            s3_li2: "<b>Seal:</b> The sauce cup with tapioca in the packing area.",
+            s3_li3: "<b>Stick:</b> Apply the thermal sticker to the lower part of the cup AND to the sealed sauce cup.",
+            s3_li4: "<b>Place:</b> Put the cup and sauce cup in the carrier, add a straw.",
+            s3_warn: "Never give an unsealed sauce cup to the courier. It will leak on the way.",
+            
+            s4_title: "Practice: Where to stick the sticker?",
+            s4_p1: "Click on the correct zone on each cup to get XP and unlock the next step.",
+            s4_zone_bottom: "Bottom part", s4_zone_top: "Lid", s4_cup_tea: "Tea (300ml)", s4_cup_bubble: "Bubble Tea (500ml)",
+            s4_fb_correct: "Great! You know the standard. The 'Next' button is unlocked.",
+            s4_fb_wrong: "Try again (click on another zone).",
+            
+            s5_title: "Practice: Large order",
+            s5_p1: "The Guest has an order: 10 rolls, 10 salads, and 2 Bubble Teas. How to pack everything safely?",
+            s5_opt1: "Pack everything in one bag to make it easier for the courier to carry.",
+            s5_opt2: "Place the drinks in the corner of the bag. If the dishes might crush them or damage the packaging, pack the drinks in a separate bag.",
+            s5_opt3: "Place the drinks on top of the containers so they don't spill.",
+            s5_fb_correct: "Correct! Drink safety is a priority. Let's move on.",
+            s5_fb_wrong: "Incorrect. Find the right option.",
+            
+            s6_title: "Assessment",
+            s6_p1: "Answer 5 questions to complete the course. +10 XP for each correct answer.",
+            s6_btn: "Finish test",
+            s6_alert: "Please answer all questions.",
+            s6_pass: "Excellent! 5 out of 5. Assessment passed!",
+            s6_fail: "You answered {score} out of 5 correctly. Try again after reviewing the standards.",
+            
+            s7_title: "Assessment passed!",
+            s7_p1: "You have successfully mastered the drink packing standards and are ready to apply them at work.",
+            s7_rank1: "Status: 1st Class Operator", s7_rank2: "Status: Packing Master (Highest level)",
+            s7_p2: "If you forget the algorithm — visual posters are always hanging in the packing area.",
+            
+            test: [
+                { q: "1. Which lid should be used for Signature Tea / Mulled Wine?", options: ["Transparent 90 mm", "Red 90 mm", "Any that fits"], correct: 1 },
+                { q: "2. Where to stick the thermal sticker on the tea cup?", options: ["On the lid", "On the lower back part of the cup", "On the stirrer"], correct: 1 },
+                { q: "3. What to do with the tapioca sauce cup?", options: ["Give it to the courier as is", "Seal it in the packing area", "Throw it away and give only the cup"], correct: 1 },
+                { q: "4. How to pack drinks if the order has many kitchen items?", options: ["Pack everything in one bag", "Pack drinks in a separate bag if there is a risk of deformation", "Give without a bag"], correct: 1 },
+                { q: "5. Can you use packaging not in the specification?", options: ["Yes, if it looks similar", "No, only approved specification", "Yes, if the regular one runs out"], correct: 1 }
             ]
         },
         kk: {
@@ -636,7 +698,7 @@
             s5_title: "Тәжірибе: Үлкен тапсырыс",
             s5_p1: "Қонақтың тапсырысы: 10 ролл, 10 салат және 2 Бабл-ти. Барлығын қалай қауіпсіз қаптауға болады?",
             s5_opt1: "Курьерге алып жүру ыңғайлы болуы үшін барлығын бір қапқа сал.",
-            s5_opt2: "Сусындарды қаптың бұрышына қой. Егер ауыр тағамдар оларды мыжып немесе төгіп тастауы мүмкін болса — сусындарды бөлек қапқа сал.",
+            s5_opt2: "Сусындарды қаптың бұрышына қой. Егер тағамдар оларды мыжып немесе қаптаманың бүтіндігін бұзуы мүмкін болса — сусындарды бөлек қапқа сал.",
             s5_opt3: "Төгілмеуі үшін сусындарды контейнерлердің үстіне қой.",
             s5_fb_correct: "Дұрыс! Сусындардың қауіпсіздігі — басты басымдық. Әрі қарай жүреміз.",
             s5_fb_wrong: "Дұрыс емес. Дұрыс нұсқаны тап.",
@@ -657,7 +719,7 @@
                 { q: "1. Авторлық шай / Глинтвейн үшін қандай қақпақ қолданылады?", options: ["Мөлдір 90 мм", "Қызыл 90 мм", "Өлшемі сай келетін кез келген"], correct: 1 },
                 { q: "2. Шай құйылған стақанға терможапсырманы қайда жапсыру керек?", options: ["Қақпаққа", "Стақанның артқы жағының төменгі бөлігіне", "Араластырғышқа"], correct: 1 },
                 { q: "3. Тапиокасы бар соусникті не істеу керек?", options: ["Курьерге сол күйінде беру", "Жинау аймағында пісіріп жабу", "Лақтырып тастап, тек стақанды беру"], correct: 1 },
-                { q: "4. Егер тапсырыста ауыр ыстық тағам мен салаттар болса, сусындарды қалай қаптау керек?", options: ["Барлығын бір қапқа салу", "Деформация қаупі болса, сусындарды бөлек қапқа салу", "Қапсыз беру"], correct: 1 },
+                { q: "4. Егер тапсырыста ас үйдің көптеген позициялары болса, сусындарды қалай қаптау керек?", options: ["Барлығын бір қапқа салу", "Деформация қаупі болса, сусындарды бөлек қапқа салу", "Қапсыз беру"], correct: 1 },
                 { q: "5. Спецификацияда жоқ қаптаманы пайдалануға бола ма?", options: ["Иә, егер ұқсас болса", "Жоқ, тек бекітілген спецификацияны", "Иә, егер кәдімгісі бітсе"], correct: 1 }
             ]
         },
@@ -697,7 +759,7 @@
             s5_title: "Amaliyot: Katta buyurtma",
             s5_p1: "Mehmonning buyurtmasi: 10 ta roll, 10 ta salat va 2 ta Babl-ti. Hammasini qanday qilib xavfsiz qadoqlash mumkin?",
             s5_opt1: "Kuryerga olib yurish qulay bo'lishi uchun hammasini bitta paketga soling.",
-            s5_opt2: "Ichimliklarni paketning burchagiga qo'ying. Agar og'ir taomlar ularni ezishi yoki to'kib yuborishi mumkin bo'lsa — ichimliklarni alohida paketga qadoqlang.",
+            s5_opt2: "Ichimliklarni paketning burchagiga qo'ying. Agar taomlar ularni ezishi yoki qadoqning yaxlitligini buzishi mumkin bo'lsa — ichimliklarni alohida paketga qadoqlang.",
             s5_opt3: "To'kilmasligi uchun ichimliklarni konteynerlar ustiga qo'ying.",
             s5_fb_correct: "To'g'ri! Ichimliklar xavfsizligi — ustuvor vazifa. Davom etamiz.",
             s5_fb_wrong: "Noto'g'ri. To'g'ri variantni toping.",
@@ -718,7 +780,7 @@
                 { q: "1. Mualliflik choyi / Glintveyn uchun qanday qopqoq ishlatiladi?", options: ["Shaffof 90 mm", "Qizil 90 mm", "O'lchamiga mos keladigan har qanday"], correct: 1 },
                 { q: "2. Choy solingan stakanga termostikerni qayerga yopishtirish kerak?", options: ["Qopqoqqa", "Stakanning orqa qismining pastki qismiga", "Aralashtirgichga"], correct: 1 },
                 { q: "3. Tapiokali sousnik bilan nima qilish kerak?", options: ["Kuryerga boricha berish", "Yig'ish zonasida payvandlash (yopish)", "Tashlab yuborib, faqat stakanni berish"], correct: 1 },
-                { q: "4. Agar buyurtmada og'ir issiq taom va salatlar bo'lsa, ichimliklarni qanday qadoqlash kerak?", options: ["Hammasini bitta paketga qadoqlash", "Deformatsiya xavfi bo'lsa, ichimliklarni alohida paketga qadoqlash", "Paketsiz berish"], correct: 1 },
+                { q: "4. Agar buyurtmada oshxona pozitsiyalari ko'p bo'lsa, ichimliklarni qanday qadoqlash kerak?", options: ["Hammasini bitta paketga qadoqlash", "Deformatsiya xavfi bo'lsa, ichimliklarni alohida paketga qadoqlash", "Paketsiz berish"], correct: 1 },
                 { q: "5. Spetsifikatsiyada yo'q qadoqdan foydalanish mumkinmi?", options: ["Ha, agar u o'xshash bo'lsa", "Yo'q, faqat tasdiqlangan spetsifikatsiyadan", "Ha, agar oddiysi tugagan bo'lsa"], correct: 1 }
             ]
         },
@@ -758,7 +820,7 @@
             s5_title: "Практика: Чоң буйрутма",
             s5_p1: "Коноктун буйрутмасы: 10 ролл, 10 салат жана 2 Бабл-ти. Баарын кантип коопсуз таңгактоо керек?",
             s5_opt1: "Курьерге алып жүрүү ыңгайлуу болуш үчүн баарын бир баштыкка сал.",
-            s5_opt2: "Суусундуктарды баштыктын бурчуна кой. Эгер оор тамактар аларды басып же төгүп салса — суусундуктарды өзүнчө баштыкка таңгакта.",
+            s5_opt2: "Суусундуктарды баштыктын бурчуна кой. Эгер тамактар аларды басып же таңгактын бүтүндүгүн бузушу мүмкүн болсо — суусундуктарды өзүнчө баштыкка таңгакта.",
             s5_opt3: "Төгүлбөшү үчүн суусундуктарды контейнерлердин үстүнө кой.",
             s5_fb_correct: "Туура! Суусундуктардын коопсуздугу — биринчи орунда. Улантабыз.",
             s5_fb_wrong: "Туура эмес. Туура вариантты тап.",
@@ -779,7 +841,7 @@
                 { q: "1. Автордук чай / Глинтвейн үчүн кандай капкак колдонулат?", options: ["Тунук 90 мм", "Кызыл 90 мм", "Өлчөмү туура келген каалаган"], correct: 1 },
                 { q: "2. Чай куйулган стаканга терможапшырманы кайда жапшыруу керек?", options: ["Капкакка", "Стакандын арткы бөлүгүнүн төмөнкү бөлүгүнө", "Аралаштыргычка"], correct: 1 },
                 { q: "3. Тапиокасы бар соусникти эмне кылуу керек?", options: ["Курьерге ошол бойдон берүү", "Жыйноо аймагында ширетип жабуу", "Ыргытып, стаканды гана берүү"], correct: 1 },
-                { q: "4. Эгер буйрутмада оор ысык тамак жана салаттар болсо, суусундуктарды кантип таңгактоо керек?", options: ["Баарын бир баштыкка салуу", "Деформация коркунучу болсо, суусундуктарды өзүнчө баштыкка салуу", "Баштыксыз берүү"], correct: 1 },
+                { q: "4. Эгер буйрутмада ашкананын көптөгөн позициялары болсо, суусундуктарды кантип таңгактоо керек?", options: ["Баарын бир баштыкка салуу", "Деформация коркунучу болсо, суусундуктарды өзүнчө баштыкка салуу", "Баштыксыз берүү"], correct: 1 },
                 { q: "5. Спецификацияда жок таңгакты колдонууга болобу?", options: ["Ооба, эгер окшош болсо", "Жок, тек бекитилген спецификацияны", "Ооба, эгер кадимкиси бүтсө"], correct: 1 }
             ]
         },
@@ -819,7 +881,7 @@
             s5_title: "Амалия: Фармоиши калон",
             s5_p1: "Фармоиши Мизоҷ: 10 ролл, 10 салат ва 2 Бабл-ти. Чӣ тавр ҳамаро бехатар бастабандӣ кунем?",
             s5_opt1: "Ҳамаро ба як халта гузоред, то курьер барои бурдан қулай бошад.",
-            s5_opt2: "Нӯшокиҳоро ба гӯшаи халта гузоред. Агар таомҳои вазнин онҳоро пахш карда тавонанд ё рехта шаванд — нӯшокиҳоро дар халтаи алоҳида бастабандӣ кунед.",
+            s5_opt2: "Нӯшокиҳоро ба гӯшаи халта гузоред. Агар таомҳо онҳоро пахш карда тавонанд ё бутунии бастабандро вайрон кунанд — нӯшокиҳоро дар халтаи алоҳида бастабандӣ кунед.",
             s5_opt3: "Барои рехта нашудан нӯшокиҳоро болои контейнерҳо гузоред.",
             s5_fb_correct: "Дуруст! Бехатарии нӯшокиҳо — афзалиятнок аст. Идома медиҳем.",
             s5_fb_wrong: "Нодуруст. Варианти дурустро ёбед.",
@@ -840,7 +902,7 @@
                 { q: "1. Барои Чойи муаллифӣ / Глинтвейн кадом қалпоқ истифода мешавад?", options: ["Шаффоф 90 мм", "Сурхи 90 мм", "Ҳар кадоме, ки андозааш мувофиқ бошад"], correct: 1 },
                 { q: "2. Ба стакани чой термостикерро куҷо часбонем?", options: ["Ба қалпоқ", "Ба қисми поёнии қафои стакан", "Ба омез"], correct: 1 },
                 { q: "3. Бо соусники тапиока чӣ кор кардан лозим аст?", options: ["Ба курьер ҳамон тавр додан", "Дар минтақаи ҷамъоварӣ пайваст кардан (пӯшондан)", "Партофта, танҳо стаканро додан"], correct: 1 },
-                { q: "4. Агар дар фармоиш таоми гарми вазнин ва салатҳо бошанд, нӯшокиҳоро чӣ тавр бастабандӣ кунем?", options: ["Ҳамаро ба як халта бастабандӣ кардан", "Агар хатари деформатсия бошад, нӯшокиҳоро дар халтаи алоҳида бастабандӣ кардан", "Бе халта додан"], correct: 1 },
+                { q: "4. Агар дар фармоиш мавқеъҳои зиёди ошхона бошанд, нӯшокиҳоро чӣ тавр бастабандӣ кунем?", options: ["Ҳамаро ба як халта бастабандӣ кардан", "Агар хатари деформатсия бошад, нӯшокиҳоро дар халтаи алоҳида бастабандӣ кардан", "Бе халта додан"], correct: 1 },
                 { q: "5. Оё истифодаи бастае, ки дар спецификатсия нест, мумкин аст?", options: ["Бале, агар монанд бошад", "Не, танҳо спецификатсияи тасдиқшуда", "Бале, агар оддӣ тамом шуда бошад"], correct: 1 }
             ]
         }
